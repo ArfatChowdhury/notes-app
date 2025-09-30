@@ -46,12 +46,13 @@ const HomeScreen = () => {
                     onChangeText={setSearchQuery}
                 />
             </View>
-            <View>
+            <View style={styles.notesCon}>
                 <FlatList
                     data={searchQuery ? filteredNotes : notes}
                     keyExtractor={(item) => String(item.id)}
                     renderItem={({item}) => <RenderNoteItems item={item}
-                    showsVerticalScrollIndicator={false}/> }
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.flatListContent}/> }
                 />
             </View>
             <TouchableOpacity
@@ -83,8 +84,16 @@ const styles = StyleSheet.create({
         paddingVertical: '10%'
     },
     addContainer: {
-        flex: 1,
-        justifyContent: "flex-end",
-        alignItems: 'flex-end'
-    }
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        zIndex: 1000, 
+    },
+    notesCon:{
+        flex: 1, // This takes all available space
+        marginBottom: 10,
+    },
+    flatListContent: {
+        paddingBottom: 20, // Extra padding at bottom
+    },
 })

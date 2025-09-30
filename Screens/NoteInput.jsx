@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useFocusEffect } from '@react-navigation/native'
 
@@ -10,12 +10,16 @@ const NoteInput = () => {
     const [description, setDescription] = useState('')
     const [date, setDate] = useState(null)
     const [notes, setNotes] = useState([])
+    const hasSavedRef = useRef(false) 
+
     const generateId = () => {
         return Date.now().toString()
     }
     const handleSave = async () => {
-        if (title.trim() || description.trim()) {
-            try {
+        if (hasSavedRef.current || (!title.trim() && !description.trim())) {
+            return
+        }     
+          try {
                 const currentDate = new Date().toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
@@ -23,6 +27,9 @@ const NoteInput = () => {
                     hour: '2-digit',
                     minute: '2-digit'
                 })
+                const existingNotesJSON = await AsyncStorage.getItem('notes')
+                const existingNotes = existingNotesJSON ? JSON.parse(existingNotesJSON) : []
+
                 const newNotes = {
                     id: generateId(),
                     title: title,
@@ -30,8 +37,10 @@ const NoteInput = () => {
                     date: currentDate,
                     timestamp: Date.now()
                 }
-                const updateNotes = [...notes, newNotes]
+
+                const updateNotes = [...existingNotes, newNotes]
                 await AsyncStorage.setItem('notes', JSON.stringify(updateNotes))
+                hasSavedRef.current = true
                 setDate(currentDate)
                 setNotes(updateNotes)
 
@@ -40,13 +49,15 @@ const NoteInput = () => {
                 console.log(err);
 
             }
-        }
+        
     }
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
-            handleSave()
-        }, 1000)
+            if (title.trim() || description.trim()) {
+                handleSave()
+            }
+        }, 2000)
         return () => clearTimeout(timeoutId)
     }, [title, description])
     
@@ -56,6 +67,18 @@ const NoteInput = () => {
         React.useCallback(() => {
             return () => {
                 handleSave()
+            }
+        }, [title, description])
+    )
+    useFocusEffect(
+        React.useCallback(() => {
+            hasSavedRef.current = false 
+            
+            return () => {
+               
+                if (!hasSavedRef.current && (title.trim() || description.trim())) {
+                    handleSave()
+                }
             }
         }, [title, description])
     )
