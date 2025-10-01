@@ -1,7 +1,8 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useFocusEffect } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import Ionicons from '@expo/vector-icons/Ionicons'
 
 
 
@@ -10,13 +11,14 @@ const NoteInput = () => {
     const [description, setDescription] = useState('')
     const [date, setDate] = useState(null)
     const [notes, setNotes] = useState([])
-    const hasSavedRef = useRef(false) 
+    
+    const navigation = useNavigation()
 
     const generateId = () => {
         return Date.now().toString()
     }
     const handleSave = async () => {
-        if (hasSavedRef.current || (!title.trim() && !description.trim())) {
+        if (!title.trim() && !description.trim()) {
             return
         }     
           try {
@@ -43,7 +45,7 @@ const NoteInput = () => {
                 hasSavedRef.current = true
                 setDate(currentDate)
                 setNotes(updateNotes)
-
+                navigation.navigate('Home')
             }
             catch (err) {
                 console.log(err);
@@ -52,36 +54,8 @@ const NoteInput = () => {
         
     }
 
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            if (title.trim() || description.trim()) {
-                handleSave()
-            }
-        }, 2000)
-        return () => clearTimeout(timeoutId)
-    }, [title, description])
-    
 
-
-    useFocusEffect(
-        React.useCallback(() => {
-            return () => {
-                handleSave()
-            }
-        }, [title, description])
-    )
-    useFocusEffect(
-        React.useCallback(() => {
-            hasSavedRef.current = false 
-            
-            return () => {
-               
-                if (!hasSavedRef.current && (title.trim() || description.trim())) {
-                    handleSave()
-                }
-            }
-        }, [title, description])
-    )
+   
 
     return (
         <View style={styles.container}>
@@ -92,6 +66,7 @@ const NoteInput = () => {
                     onChangeText={setTitle}
                     style={styles.titleInput}
                 />
+                {title.trim() || description.trim() ? <Ionicons name="checkmark" size={30} color="orange" onPress={handleSave} /> : null}
             </View>
             {date && (
                 <View style={styles.dateContainer}>
@@ -120,13 +95,25 @@ const styles = StyleSheet.create({
         paddingHorizontal: '4%'
     },
     titleCon: {
-        flex: 1
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    actionsRow: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    actionBtn: {
+        padding: 8,
+        borderRadius: 8,
     },
     bodyCon: {
         flex: 9
     },
     desInput: {
-        backgroundColor: 'red',
+        
         flex: 1,
         fontSize: 18,
         padding: 15,
@@ -136,5 +123,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         padding: 10,
+        flex: 1,
     },
 })
