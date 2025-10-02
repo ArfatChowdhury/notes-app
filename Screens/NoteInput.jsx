@@ -42,7 +42,7 @@ const NoteInput = () => {
 
                 const updateNotes = [...existingNotes, newNotes]
                 await AsyncStorage.setItem('notes', JSON.stringify(updateNotes))
-                hasSavedRef.current = true
+              
                 setDate(currentDate)
                 setNotes(updateNotes)
                 navigation.navigate('Home')
