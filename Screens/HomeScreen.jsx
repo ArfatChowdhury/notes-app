@@ -1,16 +1,17 @@
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Navbar from '../Components/Navbar';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RenderNoteItems from '../Components/RenderNoteItems';
+import { ThemeContext } from '../src/ThemeContext';
 
 const HomeScreen = () => {
     const [searchQuery, setSearchQuery] = useState('')
     const [notes, setNotes] = useState([])
     const navigation = useNavigation()
-
+    const { theme } = useContext(ThemeContext)
     useFocusEffect(
         React.useCallback(() => {
             loadNotes()
@@ -39,13 +40,13 @@ const HomeScreen = () => {
         }
     }
 
-    const filteredNotes = notes.filter(note => 
+    const filteredNotes = notes.filter(note =>
         note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         note.description?.toLowerCase().includes(searchQuery.toLowerCase())
     )
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme === 'dark' ? '#121212' : '#f9f9f9' }]}>
             <Navbar />
             <View style={styles.searchContainer}>
                 <Ionicons name="search" size={26} color="gray" />
@@ -56,13 +57,13 @@ const HomeScreen = () => {
                     style={styles.searchInput}
                 />
             </View>
-            
-         
+
+
             <View style={styles.notesListContainer}>
                 <FlatList
                     data={searchQuery ? filteredNotes : notes}
                     keyExtractor={(item) => String(item.id)}
-                    renderItem={({item}) => (
+                    renderItem={({ item }) => (
                         <RenderNoteItems item={item} onDelete={handleDeleteNote} />
                     )}
                     showsVerticalScrollIndicator={false}
@@ -70,7 +71,7 @@ const HomeScreen = () => {
                 />
             </View>
 
-            
+
             <TouchableOpacity
                 style={styles.addContainer}
                 onPress={() => navigation.navigate('Create Note')}>
@@ -85,7 +86,7 @@ export default HomeScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f9f9f9',
+        // backgroundColor: '#f9f9f9',
         paddingHorizontal: '4%',
         paddingTop: '10%'
     },
@@ -108,16 +109,16 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     notesListContainer: {
-        flex: 1, 
-        
+        flex: 1,
+
     },
     flatListContent: {
-        paddingBottom: 20, 
+        paddingBottom: 20,
     },
     addContainer: {
         position: 'absolute',
         bottom: 20,
         right: 20,
-        zIndex: 1000, 
+        zIndex: 1000,
     }
 })
