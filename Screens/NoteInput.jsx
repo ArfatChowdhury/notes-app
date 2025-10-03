@@ -1,8 +1,10 @@
 import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useContext } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { ThemeContext } from '../src/ThemeContext'
+import { darkTheme, lightTheme } from '../src/Colors'
 
 
 
@@ -13,6 +15,8 @@ const NoteInput = () => {
     const [notes, setNotes] = useState([])
     
     const navigation = useNavigation()
+    const { theme } = useContext(ThemeContext)
+    const colors = theme === 'dark' ? darkTheme : lightTheme
 
     const generateId = () => {
         return Date.now().toString()
@@ -58,25 +62,27 @@ const NoteInput = () => {
    
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
             <View style={styles.titleCon}>
                 <TextInput
                     placeholder='title'
                     value={title}
                     onChangeText={setTitle}
-                    style={styles.titleInput}
+                    placeholderTextColor={colors.textTertiary}
+                    style={[styles.titleInput, { color: colors.text }]}
                 />
-                {title.trim() || description.trim() ? <Ionicons name="checkmark" size={30} color="orange" onPress={handleSave} /> : null}
+                {title.trim() || description.trim() ? <Ionicons name="checkmark" size={30} color={colors.secondary} onPress={handleSave} /> : null}
             </View>
             {date && (
-                <View style={styles.dateContainer}>
-                    <Text style={styles.dateText}>Last saved: {date}</Text>
+                <View style={[styles.dateContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+                    <Text style={[styles.dateText, { color: colors.textSecondary }]}>Last saved: {date}</Text>
                 </View>
             )}
             <View style={styles.bodyCon}>
                 <TextInput
-                    style={styles.desInput}
+                    style={[styles.desInput, { color: colors.text }]}
                     placeholder='start typing'
+                    placeholderTextColor={colors.textTertiary}
                     multiline={true}
                     value={description}
                     onChangeText={setDescription} />
@@ -90,7 +96,6 @@ export default NoteInput
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f9f9f9',
         paddingVertical: '10%',
         paddingHorizontal: '4%'
     },
@@ -124,5 +129,17 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         padding: 10,
         flex: 1,
+    },
+    dateContainer: {
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        borderRadius: 8,
+        borderWidth: 1,
+        alignSelf: 'flex-start',
+        marginBottom: 8,
+    },
+    dateText: {
+        fontSize: 12,
+        fontStyle: 'italic',
     },
 })

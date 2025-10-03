@@ -1,4 +1,4 @@
-import { StyleSheet, Switch, Text, View } from 'react-native'
+import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext } from 'react'
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { ThemeContext } from '../src/ThemeContext'
@@ -6,16 +6,16 @@ import { darkTheme, lightTheme } from '../src/Colors'
 import { DarkTheme } from '@react-navigation/native'
 
 const SettingScreen = () => {
-    const {theme, setTheme, toggleTheme} = useContext(ThemeContext)
+    const { theme, setTheme, toggleTheme } = useContext(ThemeContext)
     const colors = theme === 'dark' ? darkTheme : lightTheme
-    
+
     return (
-        <View style={[styles.container, {backgroundColor: colors.background}]}>
-            <Text style={[styles.title, {color: colors.text}]}>Settings</Text>
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
+            <Text style={[styles.title, { color: colors.text }]}>Settings</Text>
             <View style={styles.settingContainer}>
-                <Text style={[styles.settingTitle, {color: colors.text}]}>Theme Switch</Text>
-                <View style={[styles.switchContainer, {backgroundColor: colors.card}]}>
-                    <Text style={[styles.settingDescription, {color: colors.text}]}>Dark Mode</Text>
+                <Text style={[styles.settingTitle, { color: colors.text }]}>Theme Switch</Text>
+                <View style={[styles.switchContainer, { backgroundColor: colors.card }]}>
+                    <Text style={[styles.settingDescription, { color: colors.text }]}>Dark Mode</Text>
                     <Switch
                         value={theme === 'dark'}
                         onValueChange={toggleTheme}
@@ -24,41 +24,50 @@ const SettingScreen = () => {
                     />
                 </View>
             </View>
-            <Text style={[styles.SettingTitle1, {color: colors.text}]}>Theme Settings</Text>
-            <View style={[styles.themeContainer, {backgroundColor: colors.card}]}>
-                <View style={styles.themeItem}>
-                    <Ionicons name="bulb" size={20} color={colors.secondary} />
-                    <Text style={[styles.themeTitle, {color: colors.text}]}>Light Mode</Text>
+            <Text style={[styles.SettingTitle1, { color: colors.text }]}>Theme Settings</Text>
+            <TouchableOpacity onPress={toggleTheme}>
+                <View style={[styles.themeContainer, { backgroundColor: colors.card }]}>
+                    <View style={styles.themeItem}>
+                        <Ionicons name="bulb" size={20} color={colors.secondary} />
+                        <Text style={[styles.themeTitle, { color: colors.text }]}>Light Mode</Text>
+                    </View>
+                    <TouchableOpacity onPress={toggleTheme}>
+                        <Ionicons
+                            style={styles.radioButton}
+                            name={theme === 'light' ? "radio-button-on" : "radio-button-off"}
+                            size={20}
+                            color={theme === 'light' ? colors.primary : colors.textSecondary}
+                        />
+                    </TouchableOpacity>
                 </View>
-                <Ionicons 
-                    style={styles.radioButton} 
-                    name={theme === 'light' ? "radio-button-on" : "radio-button-off"} 
-                    size={20} 
-                    color={theme === 'light' ? colors.primary : colors.textSecondary} 
-                />
-            </View>
-            <View style={[styles.themeContainer, {backgroundColor: colors.card}]}>
-                <View style={styles.themeItem}>
-                    <Ionicons name="moon" size={20} color={colors.secondary} />
-                    <Text style={[styles.themeTitle, {color: colors.text}]}>Dark Mode</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={toggleTheme}>
+
+                <View style={[styles.themeContainer, { backgroundColor: colors.card }]}>
+                    <View style={styles.themeItem}>
+                        <Ionicons name="moon" size={20} color={colors.secondary} />
+                        <Text style={[styles.themeTitle, { color: colors.text }]}>Dark Mode</Text>
+                    </View>
+                    <TouchableOpacity onPress={toggleTheme}>
+                        <Ionicons
+                            style={styles.radioButton}
+                            name={theme === 'dark' ? "radio-button-on" : "radio-button-off"}
+                            size={20}
+                            color={theme === 'dark' ? colors.primary : colors.textSecondary}
+                        />
+                    </TouchableOpacity>
                 </View>
-                <Ionicons 
-                    style={styles.radioButton} 
-                    name={theme === 'dark' ? "radio-button-on" : "radio-button-off"} 
-                    size={20} 
-                    color={theme === 'dark' ? colors.primary : colors.textSecondary} 
-                />
-            </View>
-            <View style={[styles.themeContainer, {backgroundColor: colors.card}]}>
+            </TouchableOpacity>
+            <View style={[styles.themeContainer, { backgroundColor: colors.card }]}>
                 <View style={styles.themeItem}>
                     <MaterialCommunityIcons name="lightbulb-auto-outline" size={20} color={colors.textSecondary} />
-                    <Text style={[styles.themeTitle, {color: colors.textSecondary}]}>System Default</Text>
+                    <Text style={[styles.themeTitle, { color: colors.textSecondary }]}>System Default</Text>
                 </View>
-                <Ionicons 
-                    style={styles.radioButton} 
-                    name="radio-button-off" 
-                    size={20} 
-                    color={colors.textSecondary} 
+                <Ionicons
+                    style={styles.radioButton}
+                    name="radio-button-off"
+                    size={20}
+                    color={colors.textSecondary}
                 />
             </View>
         </View>

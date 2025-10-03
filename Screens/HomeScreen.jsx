@@ -6,12 +6,14 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RenderNoteItems from '../Components/RenderNoteItems';
 import { ThemeContext } from '../src/ThemeContext';
+import { darkTheme, lightTheme } from '../src/Colors';
 
 const HomeScreen = () => {
     const [searchQuery, setSearchQuery] = useState('')
     const [notes, setNotes] = useState([])
     const navigation = useNavigation()
     const { theme } = useContext(ThemeContext)
+    const colors = theme === 'dark' ? darkTheme : lightTheme
     useFocusEffect(
         React.useCallback(() => {
             loadNotes()
@@ -46,15 +48,16 @@ const HomeScreen = () => {
     )
 
     return (
-        <View style={[styles.container, { backgroundColor: theme === 'dark' ? '#121212' : '#f9f9f9' }]}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}> 
             <Navbar />
-            <View style={styles.searchContainer}>
-                <Ionicons name="search" size={26} color="gray" />
+            <View style={[styles.searchContainer, { backgroundColor: colors.surface, shadowColor: colors.shadow, borderColor: colors.border }]}> 
+                <Ionicons name="search" size={26} color={colors.textSecondary} />
                 <TextInput
                     placeholder='Search Notes'
                     value={searchQuery}
                     onChangeText={setSearchQuery}
-                    style={styles.searchInput}
+                    placeholderTextColor={colors.textTertiary}
+                    style={[styles.searchInput, { color: colors.text }]}
                 />
             </View>
 
@@ -75,7 +78,7 @@ const HomeScreen = () => {
             <TouchableOpacity
                 style={styles.addContainer}
                 onPress={() => navigation.navigate('Create Note')}>
-                <Ionicons name="add-circle" size={72} color="orange" />
+                <Ionicons name="add-circle" size={72} color={colors.secondary} />
             </TouchableOpacity>
         </View>
     )
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
     },
     searchContainer: {
         flexDirection: 'row',
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         borderRadius: 10,
         alignItems: 'center',
         padding: 8,

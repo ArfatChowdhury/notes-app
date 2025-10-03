@@ -1,15 +1,18 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
+import { ThemeContext } from '../src/ThemeContext'
+import { darkTheme, lightTheme } from '../src/Colors'
 
 const Navbar = () => {
   const navigation = useNavigation()
+  const {theme} = useContext(ThemeContext)
   return (
     <View style={styles.headerContainer}>
-      <Text style={styles.title}>Notes</Text>
+      <Text style={[styles.title, {color: theme === 'dark' ? darkTheme.primaryLight : 'black' }]}>Notes</Text>
       <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
-        <Ionicons name="settings-outline" size={24} color="black" />
+        <Ionicons name="settings-outline" size={24} color={theme === 'dark' ? darkTheme.primaryLight : 'black'} />
       </TouchableOpacity>
     </View>
   )

@@ -1,3 +1,6 @@
+// this color file made with Ai 
+
+
 // Light Theme Colors
 export const lightTheme = {
   // Background Colors

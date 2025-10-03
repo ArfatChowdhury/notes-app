@@ -1,28 +1,32 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native' // Added TouchableOpacity
 import Ionicons from '@expo/vector-icons/Ionicons'
-import React from 'react'
+import React, { useContext } from 'react'
 import { useNavigation } from '@react-navigation/native'
+import { ThemeContext } from '../src/ThemeContext'
+import { darkTheme, lightTheme } from '../src/Colors'
 
 const RenderNoteItems = ({ item, onDelete }) => {
     const navigation = useNavigation()
+    const {theme} = useContext(ThemeContext)
+    const colors = theme === 'dark' ? darkTheme : lightTheme
     return (
         <TouchableOpacity onPress={() => navigation.navigate('Create Note', { item })}>
 
-            <View style={styles.noteCard}>
+            <View style={[styles.noteCard, { backgroundColor: colors.card, shadowColor: colors.shadow, borderColor: colors.border, borderWidth: 1 }]}> 
                 <View style={styles.headerRow}>
-                    <Text style={styles.noteTitle} numberOfLines={1}>
+                    <Text style={[styles.noteTitle, { color: colors.text }]} numberOfLines={1}>
                         {item.title || 'Untitled'}
                     </Text>
                     {!!onDelete && (
                         <TouchableOpacity onPress={() => onDelete(item.id)} style={styles.deleteBtn}>
-                            <Ionicons name="trash" size={20} color="#d9534f" />
+                            <Ionicons name="trash" size={20} color={colors.error} />
                         </TouchableOpacity>
                     )}
                 </View>
-                <Text style={styles.noteDescription} numberOfLines={2}>
+                <Text style={[styles.noteDescription, { color: colors.textSecondary }]} numberOfLines={2}>
                     {item.description || 'No description'}
                 </Text>
-                <Text style={styles.noteDate}>
+                <Text style={[styles.noteDate, { color: colors.textTertiary }]}>
                     {item.date}
                 </Text>
             </View>
@@ -34,7 +38,7 @@ export default RenderNoteItems
 
 const styles = StyleSheet.create({
     noteCard: {
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         padding: 15,
         marginVertical: 5,
         marginHorizontal: 10,

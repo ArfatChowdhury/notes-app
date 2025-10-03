@@ -16,8 +16,8 @@ export default function App() {
       <NavigationContainer >
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Create Note" component={NoteInput} />
-          <Stack.Screen name="Setting" component={SettingScreen} />
+          <Stack.Screen name="Create Note" component={NoteInput} options={{presentation: 'modal'}} />
+          <Stack.Screen name="Setting" component={SettingScreen} options={{presentation: 'transparentModal'}} />
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>
