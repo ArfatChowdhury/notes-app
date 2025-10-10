@@ -7,30 +7,48 @@ export const ThemeContext = createContext();
 export const ThemeProvider = ({ children }) => {
     const systemTheme = useColorScheme();
     const [theme, setTheme] = useState(systemTheme || 'light');
+    const [mode, setMode] = useState('system');
 
-    // Load theme from AsyncStorage on mount
+    // Load theme and mode from AsyncStorage only once on mount
     useEffect(() => {
         const loadTheme = async () => {
             const savedTheme = await AsyncStorage.getItem('userTheme');
-            if (savedTheme) {
+            const savedMode = await AsyncStorage.getItem('themeMode');
+            if (savedMode === 'user' && savedTheme) {
                 setTheme(savedTheme);
+                setMode('user');
             } else {
+                setMode('system');
                 setTheme(systemTheme || 'light');
             }
         };
         loadTheme();
-    }, [systemTheme]);
-
-    // Save theme to AsyncStorage whenever it changes
+    }, []); 
+console.log(systemTheme, mode) 
+   
     useEffect(() => {
         AsyncStorage.setItem('userTheme', theme);
-    }, [theme]);
+        AsyncStorage.setItem('themeMode', mode);
+    }, [theme, mode]);
+
+   
+    useEffect(() => {
+        if (mode === 'system') {
+            setTheme(systemTheme || 'light');
+        }
+    }, [systemTheme, mode]);
 
     const toggleTheme = () => {
+        setMode('user');
         setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
     };
 
-    const value = { theme, setTheme, toggleTheme };
+    const setSystemDefault = () => {
+        setMode('system');
+        setTheme(systemTheme || 'light');
+    };
+
+    const value = { theme, setTheme, toggleTheme, mode, setSystemDefault , setMode};
 
     return (
         <ThemeContext.Provider value={value}>
