@@ -3,14 +3,40 @@ import React, { useContext } from 'react'
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { ThemeContext } from '../src/ThemeContext'
 import { darkTheme, lightTheme } from '../src/Colors'
+import { useNavigation } from '@react-navigation/native'
 
 const SettingScreen = () => {
     const { theme, setTheme, toggleTheme, mode, setSystemDefault, setMode } = useContext(ThemeContext)
+    const navigation = useNavigation()
     const colors = theme === 'dark' ? darkTheme : lightTheme
+
+    const handleGoBack = () => {
+        if (navigation.canGoBack()) {
+            navigation.goBack()
+        } else {
+            // Fallback if can't go back
+            navigation.navigate('Home')
+        }
+    }
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            <Text style={[styles.title, { color: colors.text }]}>Settings</Text>
+            
+            <View style={styles.header}>
+                <TouchableOpacity 
+                    onPress={handleGoBack}
+                    style={styles.backButton}
+                >
+                    <Ionicons 
+                        name="arrow-back" 
+                        size={24} 
+                        color={colors.text} 
+                    />
+                </TouchableOpacity>
+                <Text style={[styles.title, { color: colors.text }]}>Settings</Text>
+                <View style={styles.placeholder} /> 
+            </View>
+
             <View style={styles.settingContainer}>
                 <Text style={[styles.settingTitle, { color: colors.text }]}>Theme Switch</Text>
                 <View style={[styles.switchContainer, { backgroundColor: colors.card }]}>
@@ -24,7 +50,9 @@ const SettingScreen = () => {
                     />
                 </View>
             </View>
+            
             <Text style={[styles.SettingTitle1, { color: colors.text }]}>Theme Settings</Text>
+            
             <TouchableOpacity onPress={() => { setTheme('light'); setMode('user'); }}>
                 <View style={[styles.themeContainer, { backgroundColor: colors.card }]}>
                     <View style={styles.themeItem}>
@@ -39,6 +67,7 @@ const SettingScreen = () => {
                     />
                 </View>
             </TouchableOpacity>
+            
             <TouchableOpacity onPress={() => { setTheme('dark'); setMode('user'); }}>
                 <View style={[styles.themeContainer, { backgroundColor: colors.card }]}>
                     <View style={styles.themeItem}>
@@ -53,6 +82,7 @@ const SettingScreen = () => {
                     />
                 </View>
             </TouchableOpacity>
+            
             <TouchableOpacity onPress={setSystemDefault}>
                 <View style={[styles.themeContainer, { backgroundColor: colors.card }]}>
                     <View style={styles.themeItem}>
@@ -79,16 +109,28 @@ const styles = StyleSheet.create({
         paddingHorizontal: '4%',
         paddingTop: '10%'
     },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+    },
+    backButton: {
+        padding: 8,
+        borderRadius: 8,
+    },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
         textAlign: 'center',
-        marginTop: 20,
+        flex: 1,
+    },
+    placeholder: {
+        width: 40,
     },
     settingTitle: {
         fontSize: 18,
-        fontWeight: 600,
+        fontWeight: '600',
         marginBottom: 20,
         marginTop: 20,
     },
@@ -108,7 +150,7 @@ const styles = StyleSheet.create({
     },
     SettingTitle1: {
         fontSize: 18,
-        fontWeight: 600,
+        fontWeight: '600',
         marginBottom: 20,
         marginTop: 20,
     },
@@ -138,10 +180,10 @@ const styles = StyleSheet.create({
     },
     themeTitle: {
         fontSize: 16,
-        fontWeight: 400,
+        fontWeight: '400',
     },
     settingDescription: {
         fontSize: 16,
-        fontWeight: 400,
+        fontWeight: '400',
     },
 })
